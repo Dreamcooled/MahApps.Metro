@@ -48,7 +48,7 @@
                                  StrokeThickness="0" />
                         <Ellipse x:Name="ellipse"
                                  Margin="4"
-                                 Stroke="#ADADAD"
+                                 Stroke="{DynamicResource GrayBrush2}"
                                  StrokeThickness="{Binding RelativeSource={x:Static RelativeSource.TemplatedParent}, Path=BorderThickness.Left}" />
                         <ContentPresenter x:Name="content"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
