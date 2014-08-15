@@ -1,7 +1,5 @@
 using System;
 using System.Globalization;
-using System.Linq;
-using System.Windows;
 using System.Windows.Data;
 
 namespace MahApps.Metro.Converters
@@ -19,7 +17,7 @@ namespace MahApps.Metro.Converters
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            return targetTypes.Select(t => DependencyProperty.UnsetValue).ToArray();
+            throw new NotImplementedException();
         }
     }
 }

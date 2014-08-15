@@ -17,9 +17,6 @@ namespace MahApps.Metro.Controls
         public static readonly DependencyProperty HeaderFontColorProperty = DependencyProperty.Register("HeaderFontColor", typeof(Brush), typeof(Panorama), new FrameworkPropertyMetadata(Brushes.White));
         public static readonly DependencyProperty HeaderFontFamilyProperty = DependencyProperty.Register("HeaderFontFamily", typeof(FontFamily), typeof(Panorama), new FrameworkPropertyMetadata(new FontFamily("Segoe UI Light")));
         public static readonly DependencyProperty UseSnapBackScrollingProperty = DependencyProperty.Register("UseSnapBackScrolling", typeof(bool), typeof(Panorama), new FrameworkPropertyMetadata(true));
-        public static readonly DependencyProperty MouseScrollEnabledProperty = DependencyProperty.Register("MouseScrollEnabled", typeof(bool), typeof(Panorama), new FrameworkPropertyMetadata(true));
-        public static readonly DependencyProperty HorizontalScrollBarEnabledProperty = DependencyProperty.Register("HorizontalScrollBarEnabled", typeof(bool), typeof(Panorama), new FrameworkPropertyMetadata(true));
-        public static readonly DependencyProperty DynamicGroupHeaderProperty = DependencyProperty.Register("DynamicGroupHeader", typeof(bool), typeof(Panorama), new FrameworkPropertyMetadata(true));
 
         public double Friction
         {
@@ -63,24 +60,6 @@ namespace MahApps.Metro.Controls
             set { SetValue(UseSnapBackScrollingProperty, value); }
         }
 
-        public bool DynamicGroupHeader
-        {
-            get { return (bool)GetValue(DynamicGroupHeaderProperty); }
-            set { SetValue(DynamicGroupHeaderProperty, value); }
-        }
-
-        public bool MouseScrollEnabled
-        {
-            get { return (bool)GetValue(MouseScrollEnabledProperty); }
-            set { SetValue(MouseScrollEnabledProperty, value); }
-        }
-
-        public bool HorizontalScrollBarEnabled
-        {
-            get { return (bool)GetValue(HorizontalScrollBarEnabledProperty); }
-            set { SetValue(HorizontalScrollBarEnabledProperty, value); }
-        }
-
         private ScrollViewer sv;
         private Point scrollTarget;
         private Point scrollStartPoint;
@@ -88,12 +67,11 @@ namespace MahApps.Metro.Controls
         private Point previousPoint;
         private Vector velocity;
         private double friction;
-        private readonly DispatcherTimer animationTimer = new DispatcherTimer(DispatcherPriority.DataBind);
-        private readonly DispatcherTimer scrollBarTimer = new DispatcherTimer(DispatcherPriority.DataBind);
+        private DispatcherTimer animationTimer = new DispatcherTimer(DispatcherPriority.DataBind);
         private static int PixelsToMoveToBeConsideredScroll = 5;
         private static int PixelsToMoveToBeConsideredClick = 2;
         private IPanoramaTile tile;
-        private bool touchCaptured;
+        private bool touchCaptured = false;
         private Point lastTouchPosition;
 
         public Panorama()
@@ -103,12 +81,15 @@ namespace MahApps.Metro.Controls
             animationTimer.Interval = new TimeSpan(0, 0, 0, 0, 20);
             animationTimer.Tick += HandleWorldTimerTick;
 
-            scrollBarTimer.Interval = TimeSpan.FromSeconds(1);
-            scrollBarTimer.Tick += (s, e) => HideHorizontalScrollBar();
+            this.Loaded += (sender, e) =>
+            {
+                animationTimer.Start();
+            };
 
-            this.Loaded += (sender, e) => animationTimer.Start();
-            this.Unloaded += (sender, e) => animationTimer.Stop();
-
+            this.Unloaded += (sender, e) =>
+            {
+                animationTimer.Stop();
+            };
             lastTouchPosition = new Point();
         }
 
@@ -138,7 +119,12 @@ namespace MahApps.Metro.Controls
 
             if (IsMouseCaptured || touchCaptured)
             {
-                Point currentPoint = IsMouseCaptured ? Mouse.GetPosition(this) : lastTouchPosition;
+                Point currentPoint;
+
+                if (IsMouseCaptured)
+                    currentPoint = Mouse.GetPosition(this);
+                else
+                    currentPoint = lastTouchPosition;
 
                 velocity = previousPoint - currentPoint;
                 previousPoint = currentPoint;
@@ -168,40 +154,9 @@ namespace MahApps.Metro.Controls
             }
         }
 
-        private void HideHorizontalScrollBar()
-        {
-            // Ignore when scroll happen with mouse drag or not to be viewed
-            if (!HorizontalScrollBarEnabled || Mouse.LeftButton == MouseButtonState.Pressed) return;
-
-            // Hide the scrollbar
-            scrollBarTimer.Stop();
-            if (sv.HorizontalScrollBarVisibility == ScrollBarVisibility.Visible)
-                sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
-        }
-
-        private void ShowHorizontalScrollBar()
-        {
-            // Ignore if scrollbar is visible yet or not to be viewed
-            if (!HorizontalScrollBarEnabled || sv.HorizontalScrollBarVisibility == ScrollBarVisibility.Visible) return;
-
-            // Restart the timer and show the scrollbar
-            scrollBarTimer.Stop();
-            if (sv.HorizontalScrollBarVisibility == ScrollBarVisibility.Hidden)
-                sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
-            scrollBarTimer.Start();
-        }
-
         public override void OnApplyTemplate()
         {
             sv = (ScrollViewer)Template.FindName("PART_ScrollViewer", this);
-
-            // Apply the handler for scrollbar visibility
-            sv.ScrollChanged += (s, e) =>
-            {
-                if (HorizontalScrollBarEnabled && Math.Abs(e.HorizontalChange) > PixelsToMoveToBeConsideredScroll)
-                    ShowHorizontalScrollBar();
-            };
-
             base.OnApplyTemplate();
         }
 
@@ -332,31 +287,7 @@ namespace MahApps.Metro.Controls
             }
         }
 
-        protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
-        {
-            if (!MouseScrollEnabled) return;
 
-            // Pause the scrollbar timer
-            if (scrollBarTimer.IsEnabled)
-                scrollBarTimer.Stop();
-
-            // Determine the new amount to scroll.
-            scrollTarget.X = sv.HorizontalOffset + ((e.Delta * -1) / 3);
-
-            // Scroll to the new position.
-            sv.ScrollToHorizontalOffset(scrollTarget.X);
-            CaptureMouse();
-
-            // Save starting point, used later when determining how much to scroll.
-            scrollStartPoint = e.GetPosition(this);
-            scrollStartOffset.X = sv.HorizontalOffset;
-
-            // Restart the scrollbar timer
-            if (HorizontalScrollBarEnabled)
-                scrollBarTimer.Start();
-
-            base.OnPreviewMouseWheel(e);
-        }
 
     }
 }
