@@ -224,7 +224,7 @@
         <Setter Property="TextElement.FontSize"
                 Value="{DynamicResource ContentFontSize}" />
         <Setter Property="Background"
-                Value="{DynamicResource WhiteBrush}" />
+                Value="{DynamicResource WindowBackgroundBrush}" />
         <Setter Property="Foreground"
                 Value="{DynamicResource BlackBrush}" />
         <Setter Property="WindowMinButtonStyle"

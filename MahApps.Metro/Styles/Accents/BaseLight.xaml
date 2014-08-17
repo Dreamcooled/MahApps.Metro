@@ -9,6 +9,7 @@
     <Color x:Key="Gray7">#FFD8D8D9</Color>
     <Color x:Key="Gray8">#FFE0E0E0</Color>
     <Color x:Key="Gray10">#FFF7F7F7</Color>
+    <Color x:Key="OurWhite">#FFF9F9F9</Color>
 
     <Color x:Key="GrayNormal">#FFBEBEBE</Color>
     <Color x:Key="GrayHover">#FF333333</Color>
@@ -31,7 +32,7 @@
     <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource WhiteColor}" />
     <SolidColorBrush x:Key="WhiteColorBrush" Color="{StaticResource WhiteColor}" />
     <SolidColorBrush x:Key="DisabledWhiteBrush" Color="{StaticResource WhiteColor}" />
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource WhiteColor}" />
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource OurWhite}" />
 
     <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="{StaticResource WhiteColor}" />
     <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{StaticResource BlackColor}" />
@@ -64,9 +65,9 @@
     <SolidColorBrush x:Key="FlatButtonPressedBackgroundBrush" Color="#222222"/>
 
     <!-- menu brushes -->
-    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="{StaticResource WhiteColor}" />
-    <SolidColorBrush x:Key="ContextMenuBackgroundBrush" Color="{StaticResource WhiteColor}" />
-    <SolidColorBrush x:Key="SubMenuBackgroundBrush" Color="{StaticResource WhiteColor}" />
+    <SolidColorBrush x:Key="MenuBackgroundBrush" Color="{StaticResource OurWhite}" />
+    <SolidColorBrush x:Key="ContextMenuBackgroundBrush" Color="{StaticResource OurWhite}" />
+    <SolidColorBrush x:Key="SubMenuBackgroundBrush" Color="{StaticResource OurWhite}" />
 
     <SolidColorBrush x:Key="ContextMenuBorderBrush" Color="{StaticResource BlackColor}" />
     <SolidColorBrush x:Key="SubMenuBorderBrush" Color="{StaticResource BlackColor}" />

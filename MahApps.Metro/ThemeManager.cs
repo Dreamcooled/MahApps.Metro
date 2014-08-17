@@ -301,12 +301,11 @@ namespace MahApps.Metro
                     var oldAccentResource = resources.MergedDictionaries.FirstOrDefault(d => d.Source == oldAccent.Resources.Source);
                     if (oldAccentResource != null)
                     {
-                        resources.MergedDictionaries.Add(newAccent.Resources);
-                        var ok = resources.MergedDictionaries.Remove(oldAccentResource);
-
+                        resources.MergedDictionaries.Remove(oldAccentResource);
                         themeChanged = true;
                     }
                 }
+                resources.MergedDictionaries.Add(newAccent.Resources);
 
                 var oldTheme = oldThemeInfo.Item1;
                 if (oldTheme != null && oldTheme != newTheme)
@@ -314,17 +313,15 @@ namespace MahApps.Metro
                     var oldThemeResource = resources.MergedDictionaries.FirstOrDefault(d => d.Source == oldTheme.Resources.Source);
                     if (oldThemeResource != null)
                     {
-                        resources.MergedDictionaries.Add(newTheme.Resources);
-                        var ok = resources.MergedDictionaries.Remove(oldThemeResource);
-
+                        resources.MergedDictionaries.Remove(oldThemeResource);
                         themeChanged = true;
                     }
                 }
+                resources.MergedDictionaries.Add(newTheme.Resources);
             }
             else
             {
                 ChangeAppStyle(resources, newAccent, newTheme);
-
                 themeChanged = true;
             }
 
