@@ -1,6 +1,8 @@
 ## MahApps.Metro with Panorma
 
-The Goal of this fork, is to provide a stable metro version together with an (old) stable panorama control, until the Panorama Control is reintroduced by MahApps.
+The Goal of this fork is to provide a stable metro version together with an (old) stable panorama control, until the Panorama Control is reintroduced by MahApps.
+
+See also: https://github.com/MahApps/MahApps.Metro/tree/0.13.1
 
 ####What's different here, from the original MahApps/MahApps.Metro Repo?
 The Panorma Control is added again. We merged one of the older but stable version (without scroll wheel support for instance).
