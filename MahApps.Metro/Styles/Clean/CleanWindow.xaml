@@ -30,6 +30,7 @@
 
                     <!-- icon -->
                     <ContentControl x:Name="PART_Icon"
+                                    Focusable="False"
                                     Grid.Row="0"
                                     Grid.Column="0"
                                     Panel.ZIndex="1"
@@ -43,6 +44,7 @@
 
                     <!-- the left window commands -->
                     <ContentPresenter x:Name="PART_LeftWindowCommands"
+                                      Focusable="False"
                                       Content="{Binding LeftWindowCommands, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
                                       Panel.ZIndex="1"
                                       Grid.Row="0"
@@ -55,6 +57,7 @@
 
                     <!-- the title bar -->
                     <Grid x:Name="PART_TitleBar"
+                          Focusable="False"
                           Grid.Row="0"
                           Grid.Column="0"
                           Grid.ColumnSpan="5"
@@ -65,13 +68,14 @@
                         <Label VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Center">
                             <ContentControl x:Name="TitleControl"
+                                            Focusable="False"
                                             Content="{TemplateBinding Title}"
                                             ContentTemplate="{TemplateBinding TitleTemplate}"
                                             HorizontalAlignment="Center">
                                 <ContentControl.Foreground>
                                     <MultiBinding Converter="{x:Static Converters:BackgroundToForegroundConverter.Instance}">
-                                        <Binding ElementName="PART_WindowTitleBackground"
-                                                 Path="Fill"
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                                 Path="Background"
                                                  Mode="OneWay" />
                                         <Binding RelativeSource="{RelativeSource TemplatedParent}"
                                                  Path="TitleForeground"
@@ -85,6 +89,7 @@
 
                     <!-- the right window commands -->
                     <ContentPresenter x:Name="PART_RightWindowCommands"
+                                      Focusable="False"
                                       Content="{Binding RightWindowCommands, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
                                       Panel.ZIndex="1"
                                       Grid.Row="0"
@@ -97,6 +102,7 @@
 
                     <!-- the window button commands -->
                     <Controls:WindowButtonCommands x:Name="PART_WindowButtonCommands"
+                                                   Focusable="False"
                                                    Panel.ZIndex="1"
                                                    Grid.Row="0"
                                                    Grid.Column="4"
@@ -143,6 +149,7 @@
                           Grid.ColumnSpan="5"
                           Grid.RowSpan="2"
                           Panel.ZIndex="3"
+                          Focusable="False"
                           FocusVisualStyle="{x:Null}"
                           x:Name="PART_OverlayBox"
                           Background="{DynamicResource BlackColorBrush}"
@@ -159,7 +166,6 @@
                 </Grid>
             </AdornerDecorator>
             <Border x:Name="PART_Border"
-                    Opacity="0"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     HorizontalAlignment="Stretch"
@@ -188,6 +194,13 @@
             </Storyboard>
         </ControlTemplate.Resources>
         <ControlTemplate.Triggers>
+            <!-- handle active/inactive state -->
+            <Trigger Property="IsActive"
+                     Value="False">
+                <Setter TargetName="PART_Border"
+                        Property="BorderBrush"
+                        Value="{Binding Path=NonActiveBorderBrush, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Controls:MetroWindow}}}" />
+            </Trigger>
             <!-- no icon and no icon content template -> collapse the icon content control -->
             <MultiTrigger>
                 <MultiTrigger.Conditions>

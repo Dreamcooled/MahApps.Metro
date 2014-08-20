@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
 using System.Windows.Interop;
-using System.Windows.Media;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Native;
 using Microsoft.Windows.Shell;
@@ -20,15 +19,9 @@ namespace MahApps.Metro.Behaviours
         private HwndSource hwndSource;
         private WindowChrome windowChrome;
         private Thickness? savedBorderThickness = null;
-        private Brush nonActiveBorderColor;
-        private Brush savedBorderBrush = null;
 
         protected override void OnAttached()
         {
-            // maybe this can change to set via window from a dependency property
-            this.nonActiveBorderColor = new SolidColorBrush(Colors.Gray);
-            this.nonActiveBorderColor.Freeze();
-
             windowChrome = new WindowChrome();
             windowChrome.ResizeBorderThickness = SystemParameters2.Current.WindowResizeBorderThickness;
             windowChrome.CaptionHeight = 0;
@@ -67,22 +60,8 @@ namespace MahApps.Metro.Behaviours
             AssociatedObject.SourceInitialized += AssociatedObject_SourceInitialized;
             AssociatedObject.StateChanged += AssociatedObject_StateChanged;
             AssociatedObject.Activated += AssociatedObject_Activated;
-            AssociatedObject.Deactivated += AssociatedObject_Deactivated;
 
-            // handle resize mode after loading the window
-            System.ComponentModel.DependencyPropertyDescriptor.FromProperty(Window.ResizeModeProperty, typeof(Window))
-                  .AddValueChanged(AssociatedObject, ResizeModePropertyChangedCallback);
-            
             base.OnAttached();
-        }
-
-        private void ResizeModePropertyChangedCallback(object sender, EventArgs e)
-        {
-            var metroWindow = sender as MetroWindow;
-            if (metroWindow != null)
-            {
-                this.HandleResizeMode(metroWindow, metroWindow.ResizeMode);
-            }
         }
 
         private void IgnoreTaskbarOnMaximizePropertyChangedCallback(object sender, EventArgs e)
@@ -91,30 +70,6 @@ namespace MahApps.Metro.Behaviours
             if (metroWindow != null && windowChrome != null)
             {
                 windowChrome.IgnoreTaskbarOnMaximize = metroWindow.IgnoreTaskbarOnMaximize;
-            }
-        }
-
-        /// <summary>
-        /// handle the resize mode for the window
-        /// </summary>
-        private void HandleResizeMode(MetroWindow window, ResizeMode resizeMode)
-        {
-            switch (resizeMode)
-            {
-                case ResizeMode.NoResize:
-                    window.ShowMaxRestoreButton = false;
-                    window.ShowMinButton = false;
-                    break;
-                case ResizeMode.CanMinimize:
-                    window.ShowMaxRestoreButton = false;
-                    window.ShowMinButton = true;
-                    break;
-
-                case ResizeMode.CanResize:
-                case ResizeMode.CanResizeWithGrip:
-                    window.ShowMaxRestoreButton = true;
-                    window.ShowMinButton = true;
-                    break;
             }
         }
 
@@ -132,14 +87,11 @@ namespace MahApps.Metro.Behaviours
                     System.ComponentModel.DependencyPropertyDescriptor.FromProperty(MetroWindow.IgnoreTaskbarOnMaximizeProperty, typeof(MetroWindow))
                           .RemoveValueChanged(AssociatedObject, IgnoreTaskbarOnMaximizePropertyChangedCallback);
                 }
-                System.ComponentModel.DependencyPropertyDescriptor.FromProperty(Window.ResizeModeProperty, typeof(Window))
-                      .RemoveValueChanged(AssociatedObject, ResizeModePropertyChangedCallback);
                 AssociatedObject.Loaded -= AssociatedObject_Loaded;
                 AssociatedObject.Unloaded -= AssociatedObject_Unloaded;
                 AssociatedObject.SourceInitialized -= AssociatedObject_SourceInitialized;
                 AssociatedObject.StateChanged -= AssociatedObject_StateChanged;
                 AssociatedObject.Activated -= AssociatedObject_Activated;
-                AssociatedObject.Deactivated -= AssociatedObject_Deactivated;
                 if (hwndSource != null)
                 {
                     hwndSource.RemoveHook(WindowProc);
@@ -201,20 +153,7 @@ namespace MahApps.Metro.Behaviours
 
         private void AssociatedObject_Activated(object sender, EventArgs e)
         {
-            if (savedBorderBrush != null)
-            {
-                AssociatedObject.BorderBrush = savedBorderBrush;
-            }
             HandleMaximize();
-        }
-
-        private void AssociatedObject_Deactivated(object sender, EventArgs e)
-        {
-            if (AssociatedObject.BorderBrush != null)
-            {
-                savedBorderBrush = AssociatedObject.BorderBrush;
-                AssociatedObject.BorderBrush = this.nonActiveBorderColor;
-            }
         }
 
         private void AssociatedObject_StateChanged(object sender, EventArgs e)
@@ -399,15 +338,6 @@ namespace MahApps.Metro.Behaviours
             window.SetIsHitTestVisibleInChromeProperty<ContentPresenter>("PART_LeftWindowCommands");
             window.SetIsHitTestVisibleInChromeProperty<ContentPresenter>("PART_RightWindowCommands");
             window.SetIsHitTestVisibleInChromeProperty<ContentControl>("PART_WindowButtonCommands");
-
-            // handle resize mode
-            this.HandleResizeMode(window, window.ResizeMode);
-
-            // non-active border brush
-            if (window.NonActiveBorderBrush != null)
-            {
-                this.nonActiveBorderColor = window.NonActiveBorderBrush;
-            }
         }
 
         public static readonly DependencyProperty EnableDWMDropShadowProperty = DependencyProperty.Register("EnableDWMDropShadow", typeof(bool), typeof(BorderlessWindowBehavior), new PropertyMetadata(false));

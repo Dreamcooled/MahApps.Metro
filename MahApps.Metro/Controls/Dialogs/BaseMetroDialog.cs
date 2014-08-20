@@ -10,6 +10,12 @@ using System.Windows.Media.Animation;
 
 namespace MahApps.Metro.Controls.Dialogs
 {
+    /// <summary>
+    /// The base class for dialogs.
+    ///
+    /// You probably don't want to use this class, if you want to add arbitrary content to your dialog, 
+    /// use the <see cref="SimpleDialog"/> class.
+    /// </summary>
     [System.Windows.Markup.ContentProperty("DialogBody")]
     public abstract class BaseMetroDialog : Control
     {
@@ -19,7 +25,7 @@ namespace MahApps.Metro.Controls.Dialogs
         public static readonly DependencyProperty TitleProperty = DependencyProperty.Register("Title", typeof(string), typeof(BaseMetroDialog), new PropertyMetadata(default(string)));
         public static readonly DependencyProperty DialogBodyProperty = DependencyProperty.Register("DialogBody", typeof(object), typeof(BaseMetroDialog), new PropertyMetadata(null, (o, e) =>
         {
-            BaseMetroDialog dialog = (o as BaseMetroDialog);
+            var dialog = o as BaseMetroDialog;
             if (dialog != null)
             {
                 if (e.OldValue != null)
@@ -94,7 +100,7 @@ namespace MahApps.Metro.Controls.Dialogs
         /// <param name="owningWindow">The window that is the parent of the dialog.</param>
         protected BaseMetroDialog(MetroWindow owningWindow, MetroDialogSettings settings)
         {
-            DialogSettings = settings == null ? owningWindow.MetroDialogOptions : settings;
+            DialogSettings = settings ?? owningWindow.MetroDialogOptions;
 
             OwningWindow = owningWindow;
             

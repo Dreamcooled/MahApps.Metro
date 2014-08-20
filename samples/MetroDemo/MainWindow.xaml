@@ -25,6 +25,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro.Resources;component/Icons.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <Canvas x:Key="appbar_github"
@@ -159,6 +160,8 @@
                     <Separator />
                     <MenuItem Click="ShowInputDialog"
                               Header="Show InputDialog" />
+                    <MenuItem Click="ShowLoginDialog"
+                              Header="Show LoginDialog" />
                     <MenuItem Click="ShowMessageDialog"
                               Header="Show MessageDialog" />
                     <MenuItem Click="ShowProgressDialog"
